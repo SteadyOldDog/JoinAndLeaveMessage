@@ -22,6 +22,7 @@ object JoinAndLeaveMessage : KotlinPlugin(
 ) {
     override fun onEnable() {
         logger.info { "JoinAndLeaveMessage Plugin loaded" }
+
         GlobalEventChannel.subscribeAlways<MemberJoinEvent> { event ->
             //监听到群员已加入群后，在开启了的群里发送一条消息，消息内容为Config.joinMessage
 
