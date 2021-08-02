@@ -27,6 +27,8 @@ object JoinAndLeaveMessage : KotlinPlugin(
 ) {
     override fun onEnable() {
         logger.info { "JoinAndLeaveMessage Plugin loaded" }
+        //加载配置文件
+        Config.reload()
 
         GlobalEventChannel.subscribeAlways<MemberJoinEvent> { event ->
             //1.监听到群员已加入群后，在开启了的群里发送一条消息，消息内容为Config.joinMessage
@@ -43,7 +45,7 @@ object JoinAndLeaveMessage : KotlinPlugin(
                                 //存在则构建一条messageChain，内容为at+欢迎消息+图片
                                 messageChain = messageChainOf(
                                     At(event.member.id),
-                                    PlainText(Config.joinMessage),
+                                    PlainText(" \n"+Config.joinMessage),
                                     event.group.uploadImage(it,"png"))
                             }else{//不存在则将resources/welcome.jpg复制到imageDirectory目录并构建messageChain
                                 if (!imageDirectory.exists()) imageDirectory.mkdir()
@@ -65,7 +67,7 @@ object JoinAndLeaveMessage : KotlinPlugin(
 
                                 messageChain = messageChainOf(
                                     At(event.member.id),
-                                    PlainText(Config.joinMessage),
+                                    PlainText(" \n"+Config.joinMessage),
                                     event.group.uploadImage(defaultWelcomeJpg,"png"))
                             }
 
