@@ -4,7 +4,9 @@ import online.bikinibottom.JoinAndLeaveMessage
 import java.io.File
 
 object ImagePath {
-    val gif = File("${JoinAndLeaveMessage.dataFolderPath}\\welcome.gif")
-    val png = File("${JoinAndLeaveMessage.dataFolderPath}\\welcome.png")
-    val jpg = File("${JoinAndLeaveMessage.dataFolderPath}\\welcome.jpg")
+    val imageDirectory = File("${JoinAndLeaveMessage.dataFolderPath}\\image")
+    val gif = File("$imageDirectory\\welcome.gif")
+    val png = File("$imageDirectory\\welcome.png")
+    val jpg = File("$imageDirectory\\welcome.jpg")
+    val picPaths :Array<File> = arrayOf(gif,png,jpg)
 }
