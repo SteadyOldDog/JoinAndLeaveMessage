@@ -8,5 +8,6 @@ object ImagePath {
     val gif = File("$imageDirectory\\welcome.gif")
     val png = File("$imageDirectory\\welcome.png")
     val jpg = File("$imageDirectory\\welcome.jpg")
-    val picPaths :Array<File> = arrayOf(gif,png,jpg)
+    val bmp = File("$imageDirectory\\welcome.bmp")
+    val picPaths :Array<File> = arrayOf(gif,png,jpg,bmp)
 }

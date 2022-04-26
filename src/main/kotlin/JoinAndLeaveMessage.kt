@@ -40,14 +40,18 @@ object JoinAndLeaveMessage : KotlinPlugin(
                     if (Config.enbleAt && Config.enblePic) {
                         var messageChain = messageChainOf(PlainText(Config.joinMessage))
                         //通过遍历判断一下欢迎图片是否存在，不存在则从resource资源里将默认图片导出
+                        var exist = false
                         ImagePath.picPaths.forEach {
                             if (it.exists()){
+                                val formatName = it.name.reversed().substring(0,3).reversed()
                                 //存在则构建一条messageChain，内容为at+欢迎消息+图片
                                 messageChain = messageChainOf(
                                     At(event.member.id),
                                     PlainText(" \n"+Config.joinMessage),
-                                    event.group.uploadImage(it,"png"))
-                            }else{//不存在则将resources/welcome.jpg复制到imageDirectory目录并构建messageChain
+                                    event.group.uploadImage(it,formatName))
+                                exist = true
+                            }
+                            if (!exist){//不存在则将resources/welcome.jpg复制到imageDirectory目录并构建messageChain
                                 if (!imageDirectory.exists()) imageDirectory.mkdir()
                                 defaultWelcomeJpg.createNewFile()
 
@@ -66,12 +70,9 @@ object JoinAndLeaveMessage : KotlinPlugin(
                                 bfos.close()
 
                                 messageChain = messageChainOf(
-                                    At(event.member.id),
-                                    PlainText(" \n"+Config.joinMessage),
-                                    event.group.uploadImage(defaultWelcomeJpg,"png"))
+                                    PlainText(Config.joinMessage),
+                                    event.group.uploadImage(defaultWelcomeJpg,"jpg"))
                             }
-
-
                         }
                         //发送消息
                         event.group.sendMessage(messageChain)
@@ -80,36 +81,38 @@ object JoinAndLeaveMessage : KotlinPlugin(
                     if (!Config.enbleAt && Config.enblePic) {
                         var messageChain = messageChainOf(PlainText(Config.joinMessage))
                         //通过遍历判断一下欢迎图片是否存在，不存在则从resource资源里将默认图片导出
+                        var exist = false
                         ImagePath.picPaths.forEach {
                             if (it.exists()){
+                                val formatName = it.name.reversed().substring(0,3).reversed()
                                 //存在则构建一条messageChain，内容为欢迎消息+图片
                                 messageChain = messageChainOf(
                                     PlainText(Config.joinMessage),
-                                    event.group.uploadImage(it,"png"))
-                            }else{//不存在则将resources/welcome.jpg复制到imageDirectory目录并构建messageChain
-                                if (!imageDirectory.exists()) imageDirectory.mkdir()
-                                defaultWelcomeJpg.createNewFile()
+                                    event.group.uploadImage(it,formatName))
+                                exist = true
+                            }
+                        }
+                        if (!exist){//不存在则将resources/welcome.jpg复制到imageDirectory目录并构建messageChain
+                            if (!imageDirectory.exists()) imageDirectory.mkdir()
+                            defaultWelcomeJpg.createNewFile()
 
-                                val bis = BufferedInputStream(getResourceAsStream("welcome.jpg"))
-                                val bfos = BufferedOutputStream(FileOutputStream(defaultWelcomeJpg))
+                            val bis = BufferedInputStream(getResourceAsStream("welcome.jpg"))
+                            val bfos = BufferedOutputStream(FileOutputStream(defaultWelcomeJpg))
 
-                                var len = 0
-                                val buf = ByteArray(1024)
-                                while (true){
-                                    len = bis.read(buf)
-                                    if (len == -1) break
-                                    bfos.write(buf,0,len)
-                                }
-
-                                bis.close()
-                                bfos.close()
-
-                                messageChain = messageChainOf(
-                                    PlainText(Config.joinMessage),
-                                    event.group.uploadImage(defaultWelcomeJpg,"png"))
+                            var len = 0
+                            val buf = ByteArray(1024)
+                            while (true){
+                                len = bis.read(buf)
+                                if (len == -1) break
+                                bfos.write(buf,0,len)
                             }
 
+                            bis.close()
+                            bfos.close()
 
+                            messageChain = messageChainOf(
+                                PlainText(Config.joinMessage),
+                                event.group.uploadImage(defaultWelcomeJpg,"jpg"))
                         }
                         //发送消息
                         event.group.sendMessage(messageChain)
